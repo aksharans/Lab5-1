@@ -3,7 +3,7 @@
 const img = new Image(); // used to load image from <input> and draw to canvas
 
 
-//image input
+// image input
 const imageInput = document.getElementById("image-input");
 
 imageInput.addEventListener('change', () => {
@@ -17,10 +17,6 @@ imageInput.addEventListener('change', () => {
   img.src = image;
   img.alt = selectedFile.name;
 
-
-  //img.src = URL(…. filename)
-  //URL.createObjectURL()
-  //[input-element].value
 });
 
 // Fires whenever the img object loads a new image (such as with img.src =)
@@ -47,9 +43,9 @@ img.addEventListener('load', () => {
 
 
 // form submit
-const submit = document.querySelector('button[type="submit"]');
+const formSubmit = document.getElementById('generate-meme');
 
-submit.addEventListener('submit', (event) => {
+formSubmit.addEventListener('submit', (event) => {
   
   console.log('pressed');
   event.preventDefault();
@@ -70,15 +66,38 @@ submit.addEventListener('submit', (event) => {
   ctx.fillText(topText, canvas.width/2, 40);
   ctx.fillText(bottomText, canvas.width/2, canvas.height-40);
 
+  const clearButton = document.querySelector('button[type="reset"]');
+  clearButton.disabled = false;
 
-  // const buttonGroup = document.getElementById("button-group");
-  // const clearButton = buttonGroup.getElementsByTagName("button")[0];
-  // const readTextButton = buttonGroup.getElementsByTagName("button")[1];
-
-  // clearButton.disabled = true;
-  // readTextButton.disabled = true;
+  const readTextButton = document.querySelector('button[type="button"]');
+  readTextButton.disabled = false;
 
 });
+
+
+//clear button
+const clear = document.querySelector('button[type="reset"]');
+
+clear.addEventListener('click', () => {
+
+  document.getElementById('text-top').value = "";
+  document.getElementById('text-bottom').value = "";
+
+  const canvas = document.getElementById('user-image');
+  const ctx = canvas.getContext('2d');
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const clearButton = document.querySelector('button[type="reset"]');
+  clearButton.disabled = true;
+
+  const readTextButton = document.querySelector('button[type="button"]');
+  readTextButton.disabled = true;
+
+});
+
+
+
 
 /**
  * Takes in the dimensions of the canvas and the new image, then calculates the new
