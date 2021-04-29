@@ -2,21 +2,25 @@
 
 const img = new Image(); // used to load image from <input> and draw to canvas
 
-const imageUpload = document.getElementById("image-input");
 
-imageUpload.addEventListener('change', () => {
-  const selectedFile = event.target.files[0];
-  const reader = new FileReader();
+//image input
+const imageInput = document.getElementById("image-input");
 
-  img.title = selectedFile.name;
+imageInput.addEventListener('change', () => {
+  
+  const selectedFile = imageInput.files[0];
+  const image = URL.createObjectURL(selectedFile);
+
+  console.log(selectedFile);
+  console.log(image);
+
+  img.src = image;
   img.alt = selectedFile.name;
-  img.src = selectedFile.src;
 
-  reader.addEventListener('load', (event) => {
-    img.src = event.target.result;
-  });
 
-  reader.readAsDataURL(selectedFile);
+  //img.src = URL(…. filename)
+  //URL.createObjectURL()
+  //[input-element].value
 });
 
 // Fires whenever the img object loads a new image (such as with img.src =)
@@ -32,37 +36,48 @@ img.addEventListener('load', () => {
   const ctx = canvas.getContext('2d');
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const buttonGroup = document.getElementById("button-group");
-  const resetButton = buttonGroup.getElementsByTagName("button")[0];
-  const readTextButton = buttonGroup.getElementsByTagName("button")[1];
-  resetButton.disabled = true;
-  readTextButton.disabled = true;
-
   ctx.fillStyle = 'black';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  const topTextBox = document.getElementById('text-top');
-  const bottomTextBox = document.getElementById('text-bottom');
-
-  topTextBox.value = "";
-  bottomTextBox.value = "";
-
   const newCoords = getDimmensions(canvas.width, canvas.height, img.width, img.height);
+  console.log(newCoords);
   ctx.drawImage(img, newCoords.startX, newCoords.startY, newCoords.width, newCoords.height);
 
 });
 
-const submit = document.querySelector('#generate-meme button[type="submit"]');
+
+// form submit
+const submit = document.querySelector('button[type="submit"]');
 
 submit.addEventListener('submit', (event) => {
+  
+  console.log('pressed');
   event.preventDefault();
-  const topText = document.getElementById('text-top');
-  const bottomText = document.getElementById('text-bottom');
 
-  const ctx = document.getElementById('canvas').getContext('2d');
-  ctx.font = '48px serif';
-  ctx.fillText(topText, 10, 50);
-  ctx.fillText(bottomText, 10, 350);
+  const topText = document.getElementById('text-top').value;
+  const bottomText = document.getElementById('text-bottom').value;
+
+  const canvas = document.getElementById('user-image');
+  const ctx = canvas.getContext('2d');
+
+  console.log(topText, bottomText);
+  
+  ctx.font = '48px sans-serif';
+  ctx.fillStyle = 'white';
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'center';
+
+  ctx.fillText(topText, canvas.width/2, 40);
+  ctx.fillText(bottomText, canvas.width/2, canvas.height-40);
+
+
+  // const buttonGroup = document.getElementById("button-group");
+  // const clearButton = buttonGroup.getElementsByTagName("button")[0];
+  // const readTextButton = buttonGroup.getElementsByTagName("button")[1];
+
+  // clearButton.disabled = true;
+  // readTextButton.disabled = true;
+
 });
 
 /**
