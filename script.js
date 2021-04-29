@@ -2,6 +2,23 @@
 
 const img = new Image(); // used to load image from <input> and draw to canvas
 
+const imageUpload = document.getElementById("image-input");
+
+imageUpload.addEventListener('change', () => {
+  const selectedFile = event.target.files[0];
+  const reader = new FileReader();
+
+  img.title = selectedFile.name;
+  img.alt = selectedFile.name;
+  img.src = selectedFile.src;
+
+  reader.addEventListener('load', (event) => {
+    img.src = event.target.result;
+  });
+
+  reader.readAsDataURL(selectedFile);
+});
+
 // Fires whenever the img object loads a new image (such as with img.src =)
 img.addEventListener('load', () => {
   // TODO
@@ -10,6 +27,42 @@ img.addEventListener('load', () => {
   // - Fill the whole Canvas with black first to add borders on non-square images, then draw on top
   // - Clear the form when a new image is selected
   // - If you draw the image to canvas here, it will update as soon as a new image is selected
+
+  const canvas = document.getElementById('user-image');
+  const ctx = canvas.getContext('2d');
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const buttonGroup = document.getElementById("button-group");
+  const resetButton = buttonGroup.getElementsByTagName("button")[0];
+  const readTextButton = buttonGroup.getElementsByTagName("button")[1];
+  resetButton.disabled = true;
+  readTextButton.disabled = true;
+
+  ctx.fillStyle = 'black';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  const topTextBox = document.getElementById('text-top');
+  const bottomTextBox = document.getElementById('text-bottom');
+
+  topTextBox.value = "";
+  bottomTextBox.value = "";
+
+  const newCoords = getDimmensions(canvas.width, canvas.height, img.width, img.height);
+  ctx.drawImage(img, newCoords.startX, newCoords.startY, newCoords.width, newCoords.height);
+
+});
+
+const submit = document.querySelector('#generate-meme button[type="submit"]');
+
+submit.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const topText = document.getElementById('text-top');
+  const bottomText = document.getElementById('text-bottom');
+
+  const ctx = document.getElementById('canvas').getContext('2d');
+  ctx.font = '48px serif';
+  ctx.fillText(topText, 10, 50);
+  ctx.fillText(bottomText, 10, 350);
 });
 
 /**
